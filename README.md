@@ -1,4 +1,4 @@
-# TCP -- Terminal Chess with Powers
+# TCP -- The Chess Project
 
 ## What
 A simple chess game with powers played in the command line by two players. I don't know how to play chess, but it is a profound game. Designed to be minimal and clean.
