@@ -6,9 +6,9 @@ class Rook(Piece):
     #moved = False
     def __init__(self, position, team):
         if team == 0:
-            super().__init__("rook", "r", Fore.RED + "\u265C", position, team)
+            super().__init__("rook", "r", "\u265C", position, team)
         else:
-            super().__init__("rook", "r", Fore.BLUE + "\u265C", position, team)
+            super().__init__("rook", "r", "\u265C", position, team)
         self.moved = False
     
     def compute_move(self, positions: list[list[int]], board: Board, checking: bool):

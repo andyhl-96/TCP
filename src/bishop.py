@@ -4,9 +4,9 @@ from board import Board
 class Bishop(Piece):
     def __init__(self, position, team):
         if team == 0:
-            super().__init__("bishop", "b", Fore.RED + "\u265D", position, team)
+            super().__init__("bishop", "b", "\u265D", position, team)
         else:
-            super().__init__("bishop", "b", Fore.BLUE + "\u265D", position, team)
+            super().__init__("bishop", "b", "\u265D", position, team)
     
     def compute_move(self, positions: list[list[int]], board: Board, checking: bool):
         # first check possible moves

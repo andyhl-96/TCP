@@ -1,6 +1,8 @@
 # class to define a board object
 #from piece import Piece
 from colorama import Fore
+import curses
+from curses import *
 
 class Board:
     # standard dimensions of a chessboard
@@ -26,7 +28,8 @@ class Board:
         pass
 
     # prints the board to stdout
-    def draw_board(self, turn: int):
+    # takes the turn and curses board window
+    def draw_board(self, turn: int, board_win: curses.window, stats_win: curses.window):
         # update all piece states
         for piece in self.red:
             piece.update_state(turn, self)
@@ -35,83 +38,23 @@ class Board:
 
         # change this later to reduce repeated code
         if len(self.red) == 1 and len(self.blue) == 1:
-            for row in range(8):
-                print(Fore.WHITE + str(row) + " ", end="")
-                for col in range(8):
-                    if self.board[row][col] != None:
-                        piece = self.board[row][col]
-                        print(piece.icon + " ", end="")
-                    else:
-                        print(Fore.GREEN + self.tiles[(row + col) % 2] + " ", end="")
-                print()
+            self.print_board(board_win, stats_win)
             print("STALEMATE")
             exit(0)
         if self.checkmate(0):
-            print("RED REMAINING: " + str(len(self.red)))
-            print("BLUE REMAINING: " + str(len(self.blue)))
-
-            print(Fore.WHITE + "  0 1 2 3 4 5 6 7")
-            # iterate over all rows
-            for row in range(8):
-                print(Fore.WHITE + str(row) + " ", end="")
-                for col in range(8):
-                    if self.board[row][col] != None:
-                        piece = self.board[row][col]
-                        print(piece.icon + " ", end="")
-                    else:
-                        print(Fore.GREEN + self.tiles[(row + col) % 2] + " ", end="")
-                print()
+            self.print_board(board_win, stats_win)
             print("BLUE WINS BY CHECKMATE")
             exit(0)
         if self.checkmate(1):
-            print("RED REMAINING: " + str(len(self.red)))
-            print("BLUE REMAINING: " + str(len(self.blue)))
-
-            print(Fore.WHITE + "  0 1 2 3 4 5 6 7")
-            # iterate over all rows
-            for row in range(8):
-                print(Fore.WHITE + str(row) + " ", end="")
-                for col in range(8):
-                    if self.board[row][col] != None:
-                        piece = self.board[row][col]
-                        print(piece.icon + " ", end="")
-                    else:
-                        print(Fore.GREEN + self.tiles[(row + col) % 2] + " ", end="")
-                print()
+            self.print_board(board_win, stats_win)
             print("RED WINS BY CHECKMATE")
             exit(0)
         if self.stalemate(0):
-            print("RED REMAINING: " + str(len(self.red)))
-            print("BLUE REMAINING: " + str(len(self.blue)))
-
-            print(Fore.WHITE + "  0 1 2 3 4 5 6 7")
-            # iterate over all rows
-            for row in range(8):
-                print(Fore.WHITE + str(row) + " ", end="")
-                for col in range(8):
-                    if self.board[row][col] != None:
-                        piece = self.board[row][col]
-                        print(piece.icon + " ", end="")
-                    else:
-                        print(Fore.GREEN + self.tiles[(row + col) % 2] + " ", end="")
-                print()
+            self.print_board(board_win, stats_win)
             print("STALEMATE")
             exit(0)
         if self.stalemate(1):
-            print("RED REMAINING: " + str(len(self.red)))
-            print("BLUE REMAINING: " + str(len(self.blue)))
-
-            print(Fore.WHITE + "  0 1 2 3 4 5 6 7")
-            # iterate over all rows
-            for row in range(8):
-                print(Fore.WHITE + str(row) + " ", end="")
-                for col in range(8):
-                    if self.board[row][col] != None:
-                        piece = self.board[row][col]
-                        print(piece.icon + " ", end="")
-                    else:
-                        print(Fore.GREEN + self.tiles[(row + col) % 2] + " ", end="")
-                print()
+            self.print_board(board_win, stats_win)
             print("STALEMATE")
             exit(0)
 
@@ -120,20 +63,50 @@ class Board:
         if self.check(1):
             print("BLUE IN CHECK")
 
-        print("RED REMAINING: " + str(len(self.red)))
-        print("BLUE REMAINING: " + str(len(self.blue)))
+        self.print_board(board_win, stats_win)
 
-        print(Fore.WHITE + "  0 1 2 3 4 5 6 7")
+    def print_board(self, board_win: curses.window, stats_win: curses.window):
+        red_rem = "RED REMAINING: " + str(len(self.red))
+        blue_rem = "BLUE REMAINING: " + str(len(self.blue))
+
+        stats_win.addstr(0, 0, red_rem)
+        stats_win.addstr(1, 0, blue_rem)
+        stats_win.refresh()
+        #print("RED REMAINING: " + str(len(self.red)))
+        #print("BLUE REMAINING: " + str(len(self.blue)))
+        curses.start_color()
+        curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_BLACK)
+        curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
+        curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(4, curses.COLOR_WHITE, curses.COLOR_BLACK)
+
+        #print(Fore.WHITE + "  a b c d e f g h")
+        y_pos = 1
+        x_pos = 2
+        board_win.addstr(y_pos, x_pos, "  a b c d e f g h", curses.color_pair(4))
+        board_win.refresh()
+        y_pos += 1
+
         # iterate over all rows
         for row in range(0, 8):
-            print(Fore.WHITE + str(row) + " ", end="")
+            x_pos = 2
+            board_win.addstr(y_pos, x_pos, str(row + 1) + " ", curses.color_pair(4))
+            #print(Fore.WHITE + str(row + 1) + " ", end="")
             for col in range(0, 8):
+                x_pos += 2
                 if self.board[row][col] != None:
                     piece = self.board[row][col]
-                    print(piece.icon + " ", end="")
+                    #print(piece.icon + " ", end="")
+                    if piece.team == 0:
+                        board_win.addstr(y_pos, x_pos, piece.icon + " ", curses.color_pair(2))
+                    else:
+                        board_win.addstr(y_pos, x_pos, piece.icon + " ", curses.color_pair(1))
                 else:
-                    print(Fore.GREEN + self.tiles[(row + col) % 2] + " ", end="")
-            print()
+                    #print(Fore.GREEN + self.tiles[(row + col) % 2] + " ", end="")
+                    board_win.addstr(y_pos, x_pos, self.tiles[(row + col) % 2] + " ", curses.color_pair(3))
+            #print()
+            y_pos += 1
+        board_win.refresh()
 
     def add_piece(self, new_piece):
         r = new_piece.position[0]

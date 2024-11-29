@@ -4,9 +4,9 @@ from board import Board
 class Queen(Piece):
     def __init__(self, position, team):
         if team == 0:
-            super().__init__("queen", "q", Fore.RED + "\u265B", position, team)
+            super().__init__("queen", "q", "\u265B", position, team)
         else:
-            super().__init__("queen", "q", Fore.BLUE + "\u265B", position, team)
+            super().__init__("queen", "q", "\u265B", position, team)
 
     def compute_move(self, positions: list[list[int]], board: Board, checking: bool):
         # first check possible moves

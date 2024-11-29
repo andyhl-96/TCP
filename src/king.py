@@ -8,9 +8,9 @@ class King(Piece):
     #check = False
     def __init__(self, position, team):
         if team == 0:
-            super().__init__("king", "k", Fore.RED + "\u265A", position, team)
+            super().__init__("king", "k", "\u265A", position, team)
         else:
-            super().__init__("king", "k", Fore.BLUE + "\u265A", position, team)
+            super().__init__("king", "k", "\u265A", position, team)
         self.moved = False
         self.check = False
 
